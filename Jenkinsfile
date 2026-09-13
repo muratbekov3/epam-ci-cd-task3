@@ -56,7 +56,7 @@ pipeline {
                             returnStdout: true
                         ).trim()
             
-            echo "Vulnerability Report:\n${vulnerabilities}"
+                        echo "Vulnerability Report:\n${vulnerabilities}"
                     }
 
                     else if (env.BRANCH_NAME == 'dev') {
