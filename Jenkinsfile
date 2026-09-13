@@ -25,6 +25,10 @@ pipeline {
                 sh 'npm test'
             }
         }
+        stage('Lint Dockerfile') {
+            steps {
+                sh 'docker run --rm -i hadolint/hadolint hadolint - < Dockerfile'
+            }
 
         stage('Build Docker Image') {
             steps {
@@ -36,6 +40,35 @@ pipeline {
 
                     else if (env.BRANCH_NAME == 'dev') {
                         sh 'docker build -t muratbekov3/nodedev:v1.0 .'
+                    }
+
+                }
+            }
+        }
+        stage('Scann image with trivy') {
+            steps {
+                script {
+
+                    if (env.BRANCH_NAME == 'main') {
+                        sh '''
+                            docker run --rm \
+                                -v /var/run/docker.sock:/var/run/docker.sock \
+                                aquasec/trivy:latest image \
+                                --severity HIGH,CRITICAL \
+                                --exit-code 1 \
+                                muratbekov3/nodemain:v1.0
+                        '''
+                    }
+
+                    else if (env.BRANCH_NAME == 'dev') {
+                        sh '''
+                            docker run --rm \
+                                -v /var/run/docker.sock:/var/run/docker.sock \
+                                aquasec/trivy:latest image \
+                                --severity HIGH,CRITICAL \
+                                --exit-code 1 \
+                                muratbekov3/nodedev:v1.0
+                        '''
                     }
 
                 }
