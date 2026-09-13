@@ -29,6 +29,7 @@ pipeline {
             steps {
                 sh 'docker run --rm -i hadolint/hadolint hadolint - < Dockerfile'
             }
+        }
 
         stage('Build Docker Image') {
             steps {
