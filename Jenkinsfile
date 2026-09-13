@@ -51,21 +51,19 @@ pipeline {
                 script {
 
                     if (env.BRANCH_NAME == 'main') {
-                        sh '''
-                            docker run --rm \
-                                -v /var/run/docker.sock:/var/run/docker.sock \
-                                aquasec/trivy:latest image \
-                                muratbekov3/nodemain:v1.0
-                        '''
+                        def vulnerabilities = sh(
+                            script: " trivy image --exit-code 0 --severity HIGH,MEDIUM,LOW --no-progress muratbekov3/nodedev:v1.0", 
+                            returnStdout: true
+                        ).trim()
+            
+            echo "Vulnerability Report:\n${vulnerabilities}"
                     }
 
                     else if (env.BRANCH_NAME == 'dev') {
-                        sh '''
-                            docker run --rm \
-                                -v /var/run/docker.sock:/var/run/docker.sock \
-                                aquasec/trivy:latest image \
-                                muratbekov3/nodedev:v1.0
-                        '''
+                        def vulnerabilities = sh(
+                            script: " trivy image --exit-code 0 --severity HIGH,MEDIUM,LOW --no-progress muratbekov3/nodedev:v1.0", 
+                            returnStdout: true
+                        ).trim()
                     }
 
                 }
