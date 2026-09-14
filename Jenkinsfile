@@ -5,7 +5,7 @@ pipeline {
     tools {
         nodejs 'NodeJS-7.8.0'
     }
-
+    
     stages {
 
         stage('Checkout') {
@@ -91,24 +91,44 @@ pipeline {
                 }
             }
         }
-        stage('Trigger Deployment') {
+
+        stage('Deploy') {
             steps {
                 script {
 
                     if (env.BRANCH_NAME == 'main') {
 
-                        build job: 'Deploy_to_main',
-                              wait: true
+                        sh '''
+                            docker pull muratbekov3/nodemain:v1.0
 
-                    }
+                            docker stop nodemain-container
+                            docker rm nodemain-container
 
-                    else if (env.BRANCH_NAME == 'dev') {
+                            docker run -d \
+                                --name nodemain-container \
+                                --expose 3000 \
+                                -p 3000:3000 \
+                                muratbekov3/nodemain:v1.0
+                        '''
 
-                        build job: 'Deploy_to_dev',
-                              wait: true
+                    } else if (env.BRANCH_NAME == 'dev') {
+
+                        sh '''
+                            docker pull muratbekov3/nodedev:v1.0
+
+                            docker stop nodedev-container 
+                            docker rm nodedev-container 
+
+                            docker run -d \
+                                --name nodedev-container \
+                                --expose 3001 \
+                                -p 3001:3000 \
+                                muratbekov3/nodedev:v1.0
+                        '''
                     }
                 }
             }
         }
     }
 }
+
