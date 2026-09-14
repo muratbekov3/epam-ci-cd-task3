@@ -52,7 +52,7 @@ pipeline {
 
                     if (env.BRANCH_NAME == 'main') {
                         def vulnerabilities = sh(
-                            script: " trivy image --exit-code 0 --severity HIGH,MEDIUM,LOW --no-progress muratbekov3/nodedev:v1.0", 
+                            script: " trivy image --exit-code 0 --severity HIGH,MEDIUM,LOW --no-progress muratbekov3/nodemain:v1.0", 
                             returnStdout: true
                         ).trim()
             
@@ -64,6 +64,8 @@ pipeline {
                             script: " trivy image --exit-code 0 --severity HIGH,MEDIUM,LOW --no-progress muratbekov3/nodedev:v1.0", 
                             returnStdout: true
                         ).trim()
+
+                        echo "Vulnerability Report:\n${vulnerabilities}"
                     }
 
                 }
