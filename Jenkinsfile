@@ -101,8 +101,8 @@ pipeline {
                         sh '''
                             docker pull muratbekov3/nodemain:v1.0
 
-                            docker stop nodemain-container
-                            docker rm nodemain-container
+                            docker stop nodemain-container || true
+                            docker rm nodemain-container || true
 
                             docker run -d \
                                 --name nodemain-container \
@@ -116,8 +116,8 @@ pipeline {
                         sh '''
                             docker pull muratbekov3/nodedev:v1.0
 
-                            docker stop nodedev-container 
-                            docker rm nodedev-container 
+                            docker stop nodedev-container || true
+                            docker rm nodedev-container || true
 
                             docker run -d \
                                 --name nodedev-container \
